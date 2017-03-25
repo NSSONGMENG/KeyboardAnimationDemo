@@ -7,15 +7,15 @@
 //
 
 #import "ViewController.h"
+#import "ChatTextView.h"
 #import "Masonry.h"
 
-#define KnumberOfRow 1
+#define KnumberOfRow 15
 
-@interface ViewController ()<UITableViewDelegate,UITableViewDataSource>
+@interface ViewController ()<UITableViewDelegate,UITableViewDataSource,UITextViewDelegate>
 
-
-@property (nonatomic, strong)UITextField    * textField;
 @property (nonatomic, strong)UITableView    * tableView;
+@property (nonatomic, strong)ChatTextView   * textView;
 
 @end
 
@@ -49,39 +49,41 @@ static NSString * ident = @"tableviewcell";
 }
 
 - (void)createSubview{
-    //这里只是简单的模拟一下，真正的输入框应该是UITextView对象而非UITextField对象
-    //因为继承自UIControl的UITextField不能实现滚动效果而继承自UIScrollView的UITextView却可以
-    _textField = [UITextField new];
-    _textField.placeholder = @"请输入";
-    _textField.backgroundColor = [UIColor whiteColor];
-    _textField.layer.cornerRadius = 5.f;
-    _textField.layer.borderColor = [UIColor lightGrayColor].CGColor;
-    _textField.layer.borderWidth = 1.f;
-    _textField.clipsToBounds = YES;
-    [self.view addSubview:_textField];
+    //因为继承自UIControl的UITextField不能实现滚动效果，所以输入框应该使用继承自UIScrollView的UITextView，或其子类
+    _textView = [ChatTextView new];
+    _textView.delegate = self;
+    _textView.maxHeight = 100;
+    _textView.placeHolder = @"请输入";
+    _textView.font = [UIFont systemFontOfSize:16];
+    _textView.backgroundColor = [UIColor whiteColor];
+    _textView.layer.cornerRadius = 4.f;
+    _textView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    _textView.layer.borderWidth = 1.f;
+    _textView.clipsToBounds = YES;
+    [self.view addSubview:_textView];
     
     _tableView = [UITableView new];
     _tableView.delegate = self;
     _tableView.dataSource = self;
     [self.view addSubview:_tableView];
     
-    [_textField mas_makeConstraints:^(MASConstraintMaker *make) {
+    [_textView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.view).offset(10);
         make.right.equalTo(self.view).offset(-10);
-        make.height.mas_equalTo(40);
+        make.height.mas_equalTo(35);
         make.bottom.equalTo(self.view);
     }];
     [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.view).offset(20);
         make.left.right.equalTo(self.view);
-        make.bottom.equalTo(_textField.mas_top);
+        make.bottom.equalTo(_textView.mas_top);
     }];
 }
 
 #pragma  mark  - gesture action
 
 - (void)tapAction{
-    [_textField resignFirstResponder];
+    [_textView resignFirstResponder];
 }
 
 #pragma  mark  - keyboard aniamtion
@@ -107,10 +109,10 @@ static NSString * ident = @"tableviewcell";
     //作为视图的键盘，弹出动画也是UIViewAnimationOptionCurveEaseIn的方式
     [UIView animateWithDuration:duration delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
         //text field
-        CGPoint textFieldOrigin = _textField.frame.origin;
-        CGSize  textFieldSize = _textField.frame.size;
+        CGPoint textFieldOrigin = _textView.frame.origin;
+        CGSize  textFieldSize = _textView.frame.size;
         CGRect  textFieldAimFrame = CGRectMake(textFieldOrigin.x, keyboardOriginY - textFieldSize.height, textFieldSize.width, textFieldSize.height);
-        _textField.frame = textFieldAimFrame;
+        _textView.frame = textFieldAimFrame;
         
         //table view
         CGPoint tableViewOrigin = _tableView.frame.origin;
@@ -122,9 +124,56 @@ static NSString * ident = @"tableviewcell";
         if (contentHeight > tableViewAimFrame.size.height){
             [_tableView setContentOffset:CGPointMake(0, contentHeight - tableViewAimFrame.size.height)];
         }
-    } completion:nil];
+    } completion:^(BOOL finished) {
+        [self refreshLayout];
+    }];
 }
 
+
+/**
+ 设置完frame之后更新约束，使frame失效
+ */
+- (void)refreshLayout{
+    [_tableView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        CGRect  frame = _tableView.frame;
+        make.top.equalTo(self.view).offset(frame.origin.y);
+        make.left.equalTo(self.view).offset(frame.origin.x);
+        make.right.equalTo(self.view).offset(- frame.origin.x);
+        make.bottom.equalTo(_textView.mas_top);
+    }];
+    [_textView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        CGRect  frame = _textView.frame;
+        CGSize  screenSize = [UIScreen mainScreen].bounds.size;
+        make.left.equalTo(self.view).offset(frame.origin.x);
+        make.right.equalTo(self.view).offset(- frame.origin.x);
+        make.height.mas_equalTo(frame.size.height);
+        make.bottom.equalTo(self.view).offset(- screenSize.height + frame.origin.y + frame.size.height);
+    }];
+}
+
+#pragma  mark  - text view
+- (void)textViewDidChange:(UITextView *)textView{
+    if (textView == _textView) {
+        [_textView textDidChanged];
+        CGPoint textViewOrigin = _textView.frame.origin;
+        CGFloat contentHeight = _tableView.contentSize.height;
+        
+        [UIView animateWithDuration:0.2f delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+            //修改table view frame
+            CGPoint tableViewOrigin = _tableView.frame.origin;
+            CGSize  tableViewSize   = _tableView.frame.size;
+            CGRect  tableViewAimFrame = CGRectMake(tableViewOrigin.x, tableViewOrigin.y, tableViewSize.width, textViewOrigin.y - tableViewOrigin.y);
+            _tableView.frame = tableViewAimFrame;
+            
+            //显示最后一个cell
+            if (contentHeight > tableViewAimFrame.size.height){
+                [_tableView setContentOffset:CGPointMake(0, contentHeight - tableViewAimFrame.size.height)];
+            }
+        } completion:^(BOOL finished) {
+            [self refreshLayout];
+        }];
+    }
+}
 
 #pragma  mark  - table view
 

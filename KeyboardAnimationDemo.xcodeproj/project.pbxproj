@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5F3B2E4F1E863A0E00CD8D7D /* ChatTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F3B2E4E1E863A0E00CD8D7D /* ChatTextView.m */; };
 		5FCC690B1E855126007C0192 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FCC690A1E855126007C0192 /* main.m */; };
 		5FCC690E1E855126007C0192 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FCC690D1E855126007C0192 /* AppDelegate.m */; };
 		5FCC69111E855126007C0192 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FCC69101E855126007C0192 /* ViewController.m */; };
@@ -26,6 +27,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5F3B2E4D1E863A0E00CD8D7D /* ChatTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatTextView.h; sourceTree = "<group>"; };
+		5F3B2E4E1E863A0E00CD8D7D /* ChatTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatTextView.m; sourceTree = "<group>"; };
 		5FCC69061E855126007C0192 /* KeyboardAnimationDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KeyboardAnimationDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FCC690A1E855126007C0192 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		5FCC690C1E855126007C0192 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -97,6 +100,8 @@
 				5FCC690D1E855126007C0192 /* AppDelegate.m */,
 				5FCC690F1E855126007C0192 /* ViewController.h */,
 				5FCC69101E855126007C0192 /* ViewController.m */,
+				5F3B2E4D1E863A0E00CD8D7D /* ChatTextView.h */,
+				5F3B2E4E1E863A0E00CD8D7D /* ChatTextView.m */,
 				5FCC69201E855145007C0192 /* Masonry */,
 				5FCC69121E855126007C0192 /* Main.storyboard */,
 				5FCC69151E855126007C0192 /* Assets.xcassets */,
@@ -178,6 +183,7 @@
 				TargetAttributes = {
 					5FCC69051E855126007C0192 = {
 						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = 8RT8SAJSN9;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -221,6 +227,7 @@
 				5FCC69411E855145007C0192 /* NSLayoutConstraint+MASDebugAdditions.m in Sources */,
 				5FCC693F1E855145007C0192 /* MASViewConstraint.m in Sources */,
 				5FCC693A1E855145007C0192 /* MASCompositeConstraint.m in Sources */,
+				5F3B2E4F1E863A0E00CD8D7D /* ChatTextView.m in Sources */,
 				5FCC69401E855145007C0192 /* NSArray+MASAdditions.m in Sources */,
 				5FCC69111E855126007C0192 /* ViewController.m in Sources */,
 				5FCC690E1E855126007C0192 /* AppDelegate.m in Sources */,
@@ -348,6 +355,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 8RT8SAJSN9;
 				INFOPLIST_FILE = KeyboardAnimationDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = bing.meng.ShenZhen.KeyboardAnimationDemo;
@@ -359,6 +367,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 8RT8SAJSN9;
 				INFOPLIST_FILE = KeyboardAnimationDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = bing.meng.ShenZhen.KeyboardAnimationDemo;
