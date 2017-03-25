@@ -49,6 +49,8 @@ static NSString * ident = @"tableviewcell";
 }
 
 - (void)createSubview{
+    //这里只是简单的模拟一下，真正的输入框应该是UITextView对象而非UITextField对象
+    //因为继承自UIControl的UITextField不能实现滚动效果而继承自UIScrollView的UITextView却可以
     _textField = [UITextField new];
     _textField.placeholder = @"请输入";
     _textField.backgroundColor = [UIColor whiteColor];
@@ -75,6 +77,8 @@ static NSString * ident = @"tableviewcell";
         make.bottom.equalTo(_textField.mas_top);
     }];
 }
+
+#pragma  mark  - gesture action
 
 - (void)tapAction{
     [_textField resignFirstResponder];
@@ -150,12 +154,15 @@ static NSString * ident = @"tableviewcell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    [_textField resignFirstResponder];
+    [self tapAction];
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
+    //需要拖动cell时隐藏键盘在此处理
+//    [self tapAction];
 }
 
+#pragma  mark  - other
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
