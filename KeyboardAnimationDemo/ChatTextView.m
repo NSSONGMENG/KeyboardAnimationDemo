@@ -17,6 +17,10 @@
     return self;
 }
 
+/**
+ 如果设置了placeHolder，请在-textViewDidChange:代理方法中调用此方法
+ 用于清除或显示plceHolder
+ */
 - (void)textDidChanged{
     [self setNeedsDisplay];
     if (_maxHeight < self.frame.size.height) return;

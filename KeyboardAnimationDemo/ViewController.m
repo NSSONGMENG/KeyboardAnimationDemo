@@ -154,12 +154,13 @@ static NSString * ident = @"tableviewcell";
 #pragma  mark  - text view
 - (void)textViewDidChange:(UITextView *)textView{
     if (textView == _textView) {
+        
         [_textView textDidChanged];
         CGPoint textViewOrigin = _textView.frame.origin;
         CGFloat contentHeight = _tableView.contentSize.height;
         
+        //修改table view frame
         [UIView animateWithDuration:0.2f delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
-            //修改table view frame
             CGPoint tableViewOrigin = _tableView.frame.origin;
             CGSize  tableViewSize   = _tableView.frame.size;
             CGRect  tableViewAimFrame = CGRectMake(tableViewOrigin.x, tableViewOrigin.y, tableViewSize.width, textViewOrigin.y - tableViewOrigin.y);

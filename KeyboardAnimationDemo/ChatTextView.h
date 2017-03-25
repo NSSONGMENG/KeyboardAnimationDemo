@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
+/** 聊天输入框 */
 @interface ChatTextView : UITextView
 
 
