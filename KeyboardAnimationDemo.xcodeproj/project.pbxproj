@@ -385,6 +385,7 @@
 				5FCC691F1E855126007C0192 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

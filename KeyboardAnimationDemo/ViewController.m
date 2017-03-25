@@ -9,7 +9,7 @@
 #import "ViewController.h"
 #import "Masonry.h"
 
-#define KnumberOfRow 15
+#define KnumberOfRow 1
 
 @interface ViewController ()<UITableViewDelegate,UITableViewDataSource>
 
@@ -32,19 +32,36 @@ static NSString * ident = @"tableviewcell";
     // Do any additional setup after loading the view, typically from a nib.
     
     self.view.backgroundColor = [UIColor yellowColor];
-    //UIKeyboardWillChangeFrameNotification － iOS 5就有了，可以放心用
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
     
-    UITapGestureRecognizer  * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction)];
+    //UIKeyboardWillChangeFrameNotification － iOS 5就有了，可以放心用
+    //注册完成之后，别忘了在dealloc方法中删除通知哦，否则会引起崩溃，不明白的请查看－dealloc方法
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:)
+                                                 name:UIKeyboardWillChangeFrameNotification
+                                               object:nil];
+    
+    //键盘回手手势（加上table view之后，如果点击到cell上就轮不到self.view响应事件了，如果cell比较少的话，还是有用的）
+    UITapGestureRecognizer  * tap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                            action:@selector(tapAction)];
     [self.view addGestureRecognizer:tap];
     
+    
+    [self createSubview];
+}
+
+- (void)createSubview{
     _textField = [UITextField new];
     _textField.placeholder = @"请输入";
-    _textField.layer.cornerRadius = 3.f;
+    _textField.backgroundColor = [UIColor whiteColor];
+    _textField.layer.cornerRadius = 5.f;
     _textField.layer.borderColor = [UIColor lightGrayColor].CGColor;
     _textField.layer.borderWidth = 1.f;
     _textField.clipsToBounds = YES;
     [self.view addSubview:_textField];
+    
+    _tableView = [UITableView new];
+    _tableView.delegate = self;
+    _tableView.dataSource = self;
+    [self.view addSubview:_tableView];
     
     [_textField mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.view).offset(10);
@@ -52,16 +69,6 @@ static NSString * ident = @"tableviewcell";
         make.height.mas_equalTo(40);
         make.bottom.equalTo(self.view);
     }];
-    
-    [self createSubview];
-}
-
-- (void)createSubview{
-    _tableView = [UITableView new];
-    _tableView.delegate = self;
-    _tableView.dataSource = self;
-    [self.view addSubview:_tableView];
-    
     [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.view).offset(20);
         make.left.right.equalTo(self.view);
@@ -77,7 +84,9 @@ static NSString * ident = @"tableviewcell";
 
 - (void)keyboardWillChangeFrame:(NSNotification *)notify{
     NSDictionary    * info = notify.userInfo;
+    //动画时间
     CGFloat animationDuration = [info[UIKeyboardAnimationDurationUserInfoKey] floatValue];
+    //键盘目标位置
     CGRect  keyboardAimFrame = [info[UIKeyboardFrameEndUserInfoKey] CGRectValue];
     [self keybaordAnimationWithDuration:animationDuration keyboardOriginY:keyboardAimFrame.origin.y];
 }
@@ -91,11 +100,11 @@ static NSString * ident = @"tableviewcell";
 - (void)keybaordAnimationWithDuration:(CGFloat)duration keyboardOriginY:(CGFloat)keyboardOriginY{
     CGFloat contentHeight = _tableView.contentSize.height;
     
+    //作为视图的键盘，弹出动画也是UIViewAnimationOptionCurveEaseIn的方式
     [UIView animateWithDuration:duration delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
         //text field
         CGPoint textFieldOrigin = _textField.frame.origin;
         CGSize  textFieldSize = _textField.frame.size;
-        
         CGRect  textFieldAimFrame = CGRectMake(textFieldOrigin.x, keyboardOriginY - textFieldSize.height, textFieldSize.width, textFieldSize.height);
         _textField.frame = textFieldAimFrame;
         
